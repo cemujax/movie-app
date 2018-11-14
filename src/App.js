@@ -4,38 +4,36 @@ import Movie from "./components/Movie";
 
 class App extends Component {
   state = {};
+
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        movies: [
-          {
-            title: "movie1",
-            poster:
-              "https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile25.uf.tistory.com%2Fimage%2F227DC3335503CCEE277ACC"
-          },
-          {
-            title: "movie2",
-            poster:
-              "https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile25.uf.tistory.com%2Fimage%2F227DC3335503CCEE277ACC"
-          },
-          {
-            title: "movie3",
-            poster:
-              "https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile25.uf.tistory.com%2Fimage%2F227DC3335503CCEE277ACC"
-          },
-          {
-            title: "movie4",
-            poster:
-              "https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile25.uf.tistory.com%2Fimage%2F227DC3335503CCEE277ACC"
-          }
-        ]
-      });
-    }, 3000);
+    this._getMovies();
   }
 
+  _getMovies = async () => {
+    const movies = await this._callApi();
+    this.setState({
+      movies: movies
+    });
+  };
+
+  _callApi = () => {
+    return fetch(
+      "https://yts.am/api/v2/list_movies.json?sort_by=download_count"
+    )
+      .then(response => response.json())
+      .then(json => json.data.movies)
+      .catch(err => console.warn(err));
+  };
+
   _renderMovies = () => {
-    const movies = this.state.movies.map((movie, index) => {
-      return <Movie key={index} title={movie.title} poster={movie.poster} />;
+    const movies = this.state.movies.map(movie => {
+      return (
+        <Movie
+          key={movie.id}
+          title={movie.title_english}
+          poster={movie.large_cover_image}
+        />
+      );
     });
     return movies;
   };
