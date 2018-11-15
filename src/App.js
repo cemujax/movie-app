@@ -32,6 +32,8 @@ class App extends Component {
           key={movie.id}
           title={movie.title_english}
           poster={movie.large_cover_image}
+          genres={movie.genres}
+          synopsis={movie.synopsis}
         />
       );
     });
